@@ -1,0 +1,22 @@
+{
+  "name": "overnaive/dingtalkrobot",
+  "description": "DingTalk Robot",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "OverNaive",
+      "email": "overnaive20@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "pimple/pimple": "^3.0",
+    "guzzlehttp/guzzle": "^6.5|^7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "DingTalkRobot\\": "src/"
+    }
+  }
+}

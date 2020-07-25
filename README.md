@@ -7,13 +7,16 @@
 ## Installation
 `composer require overnaive/dingtalkrobot ^1.0`
 
+## Documents
+[钉钉官方文档](https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq)
+
 ## Usage
 ```php
 <?php
-require 'vendor/autoload.php';
+use DingTalkRobot\DingTalkRobot;
 
 // 实例化
-$robot = new \DingTalkRobot\DingTalkRobot([
+$robot = new DingTalkRobot([
     'access_token' => 'access_token_string',
     'secret' => 'secret_string',
 ]);
@@ -41,10 +44,10 @@ $result = $robot->message
 ## Example
 ```php
 <?php
-require 'vendor/autoload.php';
+use DingTalkRobot\DingTalkRobot;
 
 // 实例化
-$robot = new \DingTalkRobot\DingTalkRobot([
+$robot = new DingTalkRobot([
     'access_token' => 'access_token_string',
     'secret' => 'secret_string',
 ]);
@@ -118,8 +121,68 @@ $result = $robot->message->feedCard
 var_dump($result);
 ```
 
-## Documents
-[钉钉官方文档](https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq)
+## Advanced Usage
+
+### 自定义 Guzzle 客户端
+
+替换 Guzzle 客户端
+```php
+<?php
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\CurlHandler;
+use DingTalkRobot\DingTalkRobot;
+
+// 实例化
+$robot = new DingTalkRobot([
+    'access_token' => 'access_token_string',
+    'secret' => 'secret_string',
+]);
+
+// 自定义 Handler，以下配置代码来自官方文档
+$handler = new CurlHandler();
+$stack = HandlerStack::create($handler);
+$customClient = new Client(['handler' => $stack]);
+
+// 通过预留方法替换掉 Guzzle 客户端
+$message = $robot->message->setHttpClient($customClient);
+$result = $message->text
+    ->setTextContent('我就是我, 是不一样的烟火@156xxxx8827')
+    ->addAtMobile('156xxxx8827')
+    ->send();
+```
+
+配置 Guzzle 客户端
+```php
+<?php
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\CurlHandler;
+use DingTalkRobot\DingTalkRobot;
+
+// 自定义 Handler，以下配置代码来自官方文档
+$handler = new CurlHandler();
+$stack = HandlerStack::create($handler);
+
+// 实例化，可通过 guzzle_options 来自配置客户端
+$robot = new DingTalkRobot([
+    'access_token' => 'access_token_string',
+    'secret' => 'secret_string',
+    'guzzle_options' => [
+        'handler' => $stack, // 自定义 Handler
+        'timeout' => 10.0, // 设置请求超时时间
+    ],
+]);
+
+$result = $robot->message->text
+    ->setTextContent('我就是我, 是不一样的烟火@156xxxx8827')
+    ->addAtMobile('156xxxx8827')
+    ->send();
+```
+
+
+理论上通过上面替换 Guzzle 客户端或配置 Handler 来支持协程，尚未测试。
+
+更多 guzzle 配置请查阅：[Guzzle Documentation](http://docs.guzzlephp.org/en/stable/overview.html)
 
 ## License
 MIT

@@ -14,9 +14,18 @@
     "pimple/pimple": "^3.0",
     "guzzlehttp/guzzle": "^6.5|^7.0"
   },
+  "require-dev": {
+    "phpstan/phpstan": "^0.12"
+  },
   "autoload": {
     "psr-4": {
       "DingTalkRobot\\": "src/"
+    }
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
     }
   }
 }
